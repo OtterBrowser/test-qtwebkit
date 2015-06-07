@@ -39,6 +39,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 	m_ui->splitter->addWidget(inspector);
 
+	const QStringList arguments = QCoreApplication::arguments();
+
+	if (arguments.count() > 1)
+	{
+		m_ui->webView->load(QUrl::fromUserInput(arguments.at(1)));
+	}
+
 	connect(m_ui->addressLineEdit, SIGNAL(returnPressed()), this, SLOT(addressChanged()));
 	connect(m_ui->goButton, SIGNAL(clicked()), this, SLOT(addressChanged()));
 	connect(m_ui->zoomSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setZoom(int)));
@@ -52,24 +59,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::addressChanged()
 {
-	QUrl url(m_ui->addressLineEdit->text());
-
-	if (url.isValid() && url.scheme().isEmpty() && !url.path().startsWith('/'))
-	{
-		QUrl httpUrl = url;
-		httpUrl.setScheme(QLatin1String("http"));
-
-		url = httpUrl;
-	}
-	else if (url.isValid() && (url.scheme().isEmpty() || url.scheme() == "file"))
-	{
-		QUrl localUrl = url;
-		localUrl.setScheme(QLatin1String("file"));
-
-		url = localUrl;
-	}
-
-	m_ui->webView->load(url);
+	m_ui->webView->load(QUrl::fromUserInput(m_ui->addressLineEdit->text()));
 }
 
 void MainWindow::urlChanged(const QUrl &url)
