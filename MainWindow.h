@@ -20,7 +20,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 
 namespace Ui
 {
@@ -38,6 +38,7 @@ public:
 protected slots:
 	void addressChanged();
 	void urlChanged(const QUrl &url);
+	void setZoom(int zoom);
 
 private:
 	Ui::MainWindow *m_ui;
