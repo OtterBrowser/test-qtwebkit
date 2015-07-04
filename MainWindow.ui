@@ -35,6 +35,28 @@
        </widget>
       </item>
       <item>
+       <widget class="QComboBox" name="featureRequestsPolicyComboBox">
+        <property name="toolTip">
+         <string>Feature Permission Requests</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Ignore</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Accept Immediately</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Accept with Delay</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
        <widget class="QSpinBox" name="zoomSpinBox">
         <property name="toolTip">
          <string>Zoom</string>

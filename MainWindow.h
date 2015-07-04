@@ -20,7 +20,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtCore/QQueue>
 #include <QtWidgets/QMainWindow>
+#include <QtWebKitWidgets/QWebFrame>
+#include <QtWebKitWidgets/QWebPage>
 
 namespace Ui
 {
@@ -36,11 +39,14 @@ public:
 	~MainWindow();
 
 protected slots:
+	void acceptFeatureRequest();
 	void addressChanged();
+	void featurePermissionRequested(QWebFrame *frame, QWebPage::Feature feature);
 	void urlChanged(const QUrl &url);
 	void setZoom(int zoom);
 
 private:
+	QQueue<QPair<QWebFrame*, QWebPage::Feature> > m_featureRequests;
 	Ui::MainWindow *m_ui;
 };
 

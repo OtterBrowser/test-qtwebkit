@@ -21,9 +21,8 @@
 
 #include "ui_MainWindow.h"
 
-#include <QtWebKitWidgets/QWebFrame>
+#include <QtCore/QTimer>
 #include <QtWebKitWidgets/QWebInspector>
-#include <QtWebKitWidgets/QWebPage>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 	m_ui(new Ui::MainWindow)
@@ -50,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 	connect(m_ui->goButton, SIGNAL(clicked()), this, SLOT(addressChanged()));
 	connect(m_ui->zoomSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setZoom(int)));
 	connect(m_ui->webView, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChanged(QUrl)));
+	connect(m_ui->webView->page(), SIGNAL(featurePermissionRequested(QWebFrame*,QWebPage::Feature)), this, SLOT(featurePermissionRequested(QWebFrame*,QWebPage::Feature)));
 }
 
 MainWindow::~MainWindow()
@@ -57,9 +57,33 @@ MainWindow::~MainWindow()
 	delete m_ui;
 }
 
+void MainWindow::acceptFeatureRequest()
+{
+	if (!m_featureRequests.isEmpty())
+	{
+		const QPair<QWebFrame*, QWebPage::Feature> featureRequest = m_featureRequests.dequeue();
+
+		m_ui->webView->page()->setFeaturePermission(featureRequest.first, featureRequest.second, QWebPage::PermissionGrantedByUser);
+	}
+}
+
 void MainWindow::addressChanged()
 {
 	m_ui->webView->load(QUrl::fromUserInput(m_ui->addressLineEdit->text()));
+}
+
+void MainWindow::featurePermissionRequested(QWebFrame *frame, QWebPage::Feature feature)
+{
+	if (m_ui->featureRequestsPolicyComboBox->currentIndex() == 1)
+	{
+		m_ui->webView->page()->setFeaturePermission(frame, feature, QWebPage::PermissionGrantedByUser);
+	}
+	else if (m_ui->featureRequestsPolicyComboBox->currentIndex() == 2)
+	{
+		m_featureRequests.enqueue(qMakePair(frame, feature));
+
+		QTimer::singleShot(2500, this, SLOT(acceptFeatureRequest()));
+	}
 }
 
 void MainWindow::urlChanged(const QUrl &url)
