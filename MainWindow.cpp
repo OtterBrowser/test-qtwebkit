@@ -22,9 +22,10 @@
 #include "ui_MainWindow.h"
 
 #include <QtCore/QTimer>
-#include <QtWebKitWidgets/QWebInspector>
+#include <QtWebKit/QWebHistory>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+	m_inspector(NULL),
 	m_ui(new Ui::MainWindow)
 {
 	m_ui->setupUi(this);
@@ -32,11 +33,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 	m_ui->webView->settings()->setAttribute(QWebSettings::JavaEnabled, true);
 	m_ui->webView->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
 
-	QWebInspector *inspector = new QWebInspector(m_ui->webView);
-	inspector->setPage(m_ui->webView->page());
-	inspector->setContextMenuPolicy(Qt::NoContextMenu);
+	m_inspector = new QWebInspector(m_ui->webView);
+	m_inspector->setPage(m_ui->webView->page());
+	m_inspector->setContextMenuPolicy(Qt::NoContextMenu);
 
-	m_ui->splitter->addWidget(inspector);
+	m_ui->splitter->addWidget(m_inspector);
 
 	const QStringList arguments = QCoreApplication::arguments();
 
@@ -47,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 	connect(m_ui->addressLineEdit, SIGNAL(returnPressed()), this, SLOT(addressChanged()));
 	connect(m_ui->goButton, SIGNAL(clicked()), this, SLOT(addressChanged()));
+	connect(m_ui->cloneButton, SIGNAL(clicked()), this, SLOT(cloneHistory()));
 	connect(m_ui->zoomSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setZoom(int)));
 	connect(m_ui->webView, SIGNAL(urlChanged(QUrl)), this, SLOT(urlChanged(QUrl)));
 	connect(m_ui->webView->page(), SIGNAL(featurePermissionRequested(QWebFrame*,QWebPage::Feature)), this, SLOT(featurePermissionRequested(QWebFrame*,QWebPage::Feature)));
@@ -55,6 +57,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 MainWindow::~MainWindow()
 {
 	delete m_ui;
+}
+
+void MainWindow::cloneHistory()
+{
+	QByteArray data;
+	QDataStream stream(&data, QIODevice::ReadWrite);
+	stream << *(m_ui->webView->page()->history());
+
+	QWebPage *page = new QWebPage(m_ui->webView);
+	page->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+	page->settings()->setAttribute(QWebSettings::JavaEnabled, true);
+	page->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
+
+	m_ui->webView->setPage(page);
+
+	m_inspector->setPage(page);
+
+	stream.device()->reset();
+	stream >> *(page->history());
 }
 
 void MainWindow::acceptFeatureRequest()

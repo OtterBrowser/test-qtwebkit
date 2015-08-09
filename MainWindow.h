@@ -23,6 +23,7 @@
 #include <QtCore/QQueue>
 #include <QtWidgets/QMainWindow>
 #include <QtWebKitWidgets/QWebFrame>
+#include <QtWebKitWidgets/QWebInspector>
 #include <QtWebKitWidgets/QWebPage>
 
 namespace Ui
@@ -39,6 +40,7 @@ public:
 	~MainWindow();
 
 protected slots:
+	void cloneHistory();
 	void acceptFeatureRequest();
 	void addressChanged();
 	void featurePermissionRequested(QWebFrame *frame, QWebPage::Feature feature);
@@ -46,6 +48,7 @@ protected slots:
 	void setZoom(int zoom);
 
 private:
+	QWebInspector *m_inspector;
 	QQueue<QPair<QWebFrame*, QWebPage::Feature> > m_featureRequests;
 	Ui::MainWindow *m_ui;
 };

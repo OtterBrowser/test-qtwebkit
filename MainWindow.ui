@@ -35,6 +35,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QToolButton" name="cloneButton">
+        <property name="toolTip">
+         <string>Clone History</string>
+        </property>
+        <property name="text">
+         <string>Clone</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QComboBox" name="featureRequestsPolicyComboBox">
         <property name="toolTip">
          <string>Feature Permission Requests</string>
