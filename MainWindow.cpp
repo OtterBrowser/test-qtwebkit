@@ -1,6 +1,6 @@
 /**************************************************************************
 * Otter Browser: Web browser controlled by the user, not vice-versa.
-* Copyright (C) 2015 Michal Dutkiewicz aka Emdek <michal@emdek.pl>
+* Copyright (C) 2015 - 2016 Michal Dutkiewicz aka Emdek <michal@emdek.pl>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 #include <QtWebKit/QWebHistory>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-	m_inspector(NULL),
+	m_inspector(nullptr),
 	m_ui(new Ui::MainWindow)
 {
 	m_ui->setupUi(this);
@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
 	m_ui->splitter->addWidget(m_inspector);
 
-	const QStringList arguments = QCoreApplication::arguments();
+	const QStringList arguments(QCoreApplication::arguments());
 
 	if (arguments.count() > 1)
 	{
@@ -65,7 +65,7 @@ void MainWindow::cloneHistory()
 	QDataStream stream(&data, QIODevice::ReadWrite);
 	stream << *(m_ui->webView->page()->history());
 
-	QWebPage *page = new QWebPage(m_ui->webView);
+	QWebPage *page(new QWebPage(m_ui->webView));
 	page->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 	page->settings()->setAttribute(QWebSettings::JavaEnabled, true);
 	page->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
@@ -82,7 +82,7 @@ void MainWindow::acceptFeatureRequest()
 {
 	if (!m_featureRequests.isEmpty())
 	{
-		const QPair<QWebFrame*, QWebPage::Feature> featureRequest = m_featureRequests.dequeue();
+		const QPair<QWebFrame*, QWebPage::Feature> featureRequest(m_featureRequests.dequeue());
 
 		m_ui->webView->page()->setFeaturePermission(featureRequest.first, featureRequest.second, QWebPage::PermissionGrantedByUser);
 	}

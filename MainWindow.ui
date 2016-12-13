@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1122</width>
-    <height>920</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -89,7 +89,7 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QWebView" name="webView"/>
+      <widget class="QWebView" name="webView" native="true"/>
      </widget>
     </item>
    </layout>

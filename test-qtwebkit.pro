@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui webkit webkitwidgets widgets
+CONFIG   += c++11
 
 TARGET = test-qtwebkit
 TEMPLATE = app
